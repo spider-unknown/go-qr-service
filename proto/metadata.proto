@@ -1,0 +1,564 @@
+syntax="proto3";
+
+package metadata;
+
+import "api/annotations.proto";
+import "openapiv2/annotations.proto";
+import "google/protobuf/struct.proto";
+
+option go_package = "/proto;pb";
+
+option (micro.openapiv2.openapiv2_swagger) = {
+    security_definitions: {
+        security: {
+            key: "BasicAuth";
+            value: {
+                name: "Authorization token"
+                type: TYPE_API_KEY;
+                in: IN_HEADER;
+            }
+        }
+    }
+};
+
+service MetadataProcessingService {
+    rpc GetFileMetadata(GetMetadataRequest) returns (GetMetadataResponse) {
+        option (micro.api.http) = {
+            get: "/metadata/{metadata_id}"
+        };
+        option (micro.openapiv2.openapiv2_operation) = {
+            operation_id: "GetFileMetadata"
+            produces: "application/json"
+            responses: {
+                key: "200"
+                value: {
+                    description: "Metadata by ID is found"
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.GetMetadataResponse"
+                        }
+                    }
+                }
+            }
+            responses: {
+                key: "401"
+                value: {
+                    description: "User is not authorized"
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error"
+                        }
+                    }
+                }
+            }
+            responses: {
+                key: "404";
+                value: {
+                    description: "Metadata by ID not found";
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error";
+                        };
+                    };
+                };
+            };
+            responses: {
+                key: "500"
+                value: {
+                    description: "Cannot fetch data from DB"
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error"
+                        }
+                    }
+                }
+            }
+        };
+    };
+    rpc UpdateFileMetadata(UpdateMetadataRequest) returns (UpdateMetadataResponse) {
+        option (micro.api.http) = {
+            put: "/metadata/{update_metadata_id}"
+            body: "*"
+        };
+        option (micro.openapiv2.openapiv2_operation) = {
+            operation_id: "UpdateFileMetadata"
+            consumes: "application/json"
+            produces: "application/json"
+            responses: {
+                key: "200"
+                value: {
+                    description: "Metadata updated"
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.UpdateMetadataResponse"
+                        }
+                    }
+                }
+            }
+            responses: {
+                key: "400";
+                value: {
+                    description: "Metadata not valid or not serializable";
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error";
+                        };
+                    };
+                };
+            };
+            responses: {
+                key: "401"
+                value: {
+                    description: "User is not authorized"
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error"
+                        }
+                    }
+                }
+            }
+            responses: {
+                key: "404";
+                value: {
+                    description: "Metadata by ID not found";
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error";
+                        };
+                    };
+                };
+            };
+        };
+    };
+    rpc FindAll(FindAllRequest) returns (stream FindAllResponse) {
+        option (micro.api.http) = {
+            get: "/metadata"
+        };
+        option (micro.openapiv2.openapiv2_operation) = {
+            operation_id: "FindAll"
+            produces: "application/json"
+            responses: {
+                key: "200"
+                value: {
+                    description: "Return all metadata"
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.FindAllResponse"
+                        }
+                    }
+                }
+            }
+            responses: {
+                key: "401"
+                value: {
+                    description: "User is not authorized"
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error"
+                        }
+                    }
+                }
+            }
+            responses: {
+                key: "500";
+                value: {
+                    description: "s3 or DB produced error";
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error";
+                        };
+                    };
+                };
+            };
+        };
+    };
+    rpc FindAllWithConditions(FindAllWithConditionsRequest) returns (stream FindAllResponse) {
+        option (micro.api.http) = {
+            post: "/metadata/search"
+            body: "*"
+        };
+        option (micro.openapiv2.openapiv2_operation) = {
+            operation_id: "FindAllWithConditions"
+            consumes: "application/json"
+            produces: "application/json"
+            responses: {
+                key: "200"
+                value: {
+                    description: "Return all metadata"
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.FindAllResponse"
+                        }
+                    }
+                }
+            }
+            responses: {
+                key: "400";
+                value: {
+                    description: "Conditions are not valid or not serializable";
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error";
+                        };
+                    };
+                };
+            };
+            responses: {
+                key: "401"
+                value: {
+                    description: "User is not authorized"
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error"
+                        }
+                    }
+                }
+            }
+            responses: {
+                key: "500";
+                value: {
+                    description: "s3 or DB produced error";
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error";
+                        };
+                    };
+                };
+            };
+        };
+    }
+    rpc FindAllWithTextSearching(FindAllWithTextSearchingRequest) returns (stream FindAllResponse) {
+        option (micro.api.http) = {
+            post: "/metadata/search/text"
+            body: "*"
+        };
+        option (micro.openapiv2.openapiv2_operation) = {
+            operation_id: "FindAllWithConditions"
+            consumes: "application/json"
+            produces: "application/json"
+            responses: {
+                key: "200"
+                value: {
+                    description: "Return all metadata by text searching criteria"
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.FindAllResponse"
+                        }
+                    }
+                }
+            }
+            responses: {
+                key: "400";
+                value: {
+                    description: "Text searching are not valid or not serializable";
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error";
+                        };
+                    };
+                };
+            };
+            responses: {
+                key: "401"
+                value: {
+                    description: "User is not authorized"
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error"
+                        }
+                    }
+                }
+            }
+            responses: {
+                key: "500";
+                value: {
+                    description: "s3 or DB produced error";
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error";
+                        };
+                    };
+                };
+            };
+        };
+    };
+    rpc FindAllWithFullSearching(FindAllWithTextSearchingRequest) returns (stream FindAllResponse) {
+        option (micro.api.http) = {
+            post: "/metadata/search/full"
+            body: "*"
+        };
+        option (micro.openapiv2.openapiv2_operation) = {
+            operation_id: "FindAllWithConditions"
+            consumes: "application/json"
+            produces: "application/json"
+            responses: {
+                key: "200"
+                value: {
+                    description: "Return all metadata by text searching criteria"
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.FindAllResponse"
+                        }
+                    }
+                }
+            }
+            responses: {
+                key: "400";
+                value: {
+                    description: "Text searching are not valid or not serializable";
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error";
+                        };
+                    };
+                };
+            };
+            responses: {
+                key: "401"
+                value: {
+                    description: "User is not authorized"
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error"
+                        }
+                    }
+                }
+            }
+            responses: {
+                key: "500";
+                value: {
+                    description: "s3 or DB produced error";
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error";
+                        };
+                    };
+                };
+            };
+        };
+    };
+    rpc SaveFingerprint(SaveFingerprintRequest) returns(SaveFingerprintResponse) {
+        option (micro.api.http) = {
+            post: "/metadata/fingerprint"
+            body: "*"
+        };
+        option (micro.openapiv2.openapiv2_operation) = {
+            operation_id: "SaveFingerprint"
+            consumes: "application/json"
+            produces: "application/json"
+            responses: {
+                key: "201"
+                value: {
+                    description: "Save new fingerprint"
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.SaveFingerprintRequest"
+                        }
+                    }
+                }
+            }
+            responses: {
+                key: "400";
+                value: {
+                    description: "File ID or Fingerprint not present in request";
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error";
+                        };
+                    };
+                };
+            };
+            responses: {
+                key: "401"
+                value: {
+                    description: "User is not authorized"
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error"
+                        }
+                    }
+                }
+            }
+            responses: {
+                key: "500";
+                value: {
+                    description: "DB produced error";
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error";
+                        };
+                    };
+                };
+            };
+        };
+    };
+    rpc FindAllFingerprintsByID(FindAllFingerprintsByIDRequest) returns(FindAllFingerprintsByIDResponse) {
+        option (micro.api.http) = {
+            get: "/metadata/files/{file_id}/fingerprints"
+        };
+        option (micro.openapiv2.openapiv2_operation) = {
+            operation_id: "FindAllFingerprintsByID"
+            consumes: "application/json"
+            produces: "application/json"
+            responses: {
+                key: "200"
+                value: {
+                    description: "All fingerprints by file ID"
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.FindAllFingerprintsByIDResponse"
+                        }
+                    }
+                }
+            }
+            responses: {
+                key: "400";
+                value: {
+                    description: "File ID is not present in the path";
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error";
+                        };
+                    };
+                };
+            };
+            responses: {
+                key: "401"
+                value: {
+                    description: "User is not authorized"
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error"
+                        }
+                    }
+                }
+            }
+            responses: {
+                key: "500";
+                value: {
+                    description: "DB produced error";
+                    schema: {
+                        json_schema: {
+                            ref: ".metadata.Error";
+                        };
+                    };
+                };
+            };
+        };
+    };
+};
+
+message FindAllFingerprintsByIDRequest {
+    string file_id = 1;
+}
+
+message FindAllFingerprintsByIDResponse {
+    repeated Fingerprint fingerprints = 1;
+}
+
+message Fingerprint {
+    string id = 1;
+    string file_id = 2;
+    string fingerprint = 3;
+    string created_date = 4;
+    string phone_number = 5;
+}
+
+message SaveFingerprintRequest {
+    string file_id = 1;
+    string fingerprint = 2;
+}
+
+message SaveFingerprintResponse {
+    string fingerprint_id = 1;
+}
+
+message FindAllWithTextSearchingRequest {
+    repeated string search = 1;
+}
+
+message FindAllWithConditionsRequest {
+    string type = 1;
+    string class = 2;
+    string number = 3;
+    string organization = 4;
+    google.protobuf.Value metadata = 5;
+}
+
+message FindAllRequest {}
+
+message FindAllResponse {
+    string id = 1;
+    string file_name = 2;
+    string type = 3;
+    string number = 4;
+    string class = 5;
+    bool checked = 6;
+    string organization = 7;
+    string created_at = 8;
+    google.protobuf.Value metadata = 9;
+}
+
+message FileProcessingRequest {
+    repeated bytes file = 1;
+    string body = 2;
+}
+
+message FileProcessingResponse {
+    string file_id = 1;
+}
+
+message GetMetadataRequest {
+    string metadata_id = 1;
+}
+
+message GetMetadataResponse {
+    string id = 1;
+    string file_name = 2;
+    string type = 3;
+    string number = 4;
+    string class = 5;
+    bool checked = 6;
+    string organization = 7;
+    string created_at = 8;
+    google.protobuf.Value metadata = 9;
+}
+
+message FileDownloadRequest {
+    string file_download_id = 1;
+}
+
+message FileDownloadResponse {
+    bytes data = 1;
+}
+
+message UpdateMetadataRequest {
+    string update_metadata_id = 1;
+    google.protobuf.Value metadata = 2;
+}
+
+message UpdateMetadataResponse {}
+
+message Error {
+    string msg = 1;
+}
+
+message ErrorNotFound {
+    string msg = 1;
+}
+
+message ErrorAlreadyExists {
+    string msg = 1;
+}
+
+message ErrorUnauthorized {
+    string msg = 1;
+}
+
+message ErrorBadRequest {
+    string msg = 1;
+}
+
+message ErrorAccessDenied {
+    string msg = 1;
+}

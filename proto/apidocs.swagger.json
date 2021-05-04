@@ -1,0 +1,629 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "metadata.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "MetadataProcessingService"
+    },
+    {
+      "name": "DocumentQRProcessingService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/document/{documentId}": {
+      "get": {
+        "operationId": "DocumentQRProcessingService_GetDocumentQR",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/documentPostQRResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "documentId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DocumentQRProcessingService"
+        ]
+      },
+      "post": {
+        "operationId": "DocumentQRProcessingService_PostDocumentQR",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/documentPostQRResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "documentId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DocumentQRProcessingService"
+        ]
+      }
+    },
+    "/metadata": {
+      "get": {
+        "operationId": "FindAll",
+        "responses": {
+          "200": {
+            "description": "Return all metadata",
+            "schema": {
+              "$ref": "#/definitions/metadataFindAllResponse"
+            }
+          },
+          "401": {
+            "description": "User is not authorized",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          },
+          "500": {
+            "description": "s3 or DB produced error",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          }
+        },
+        "tags": [
+          "MetadataProcessingService"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/metadata/files/{fileId}/fingerprints": {
+      "get": {
+        "operationId": "FindAllFingerprintsByID",
+        "responses": {
+          "200": {
+            "description": "All fingerprints by file ID",
+            "schema": {
+              "$ref": "#/definitions/metadataFindAllFingerprintsByIDResponse"
+            }
+          },
+          "400": {
+            "description": "File ID is not present in the path",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          },
+          "401": {
+            "description": "User is not authorized",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          },
+          "500": {
+            "description": "DB produced error",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "fileId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "MetadataProcessingService"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/metadata/fingerprint": {
+      "post": {
+        "operationId": "SaveFingerprint",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/metadataSaveFingerprintResponse"
+            }
+          },
+          "201": {
+            "description": "Save new fingerprint",
+            "schema": {
+              "$ref": "#/definitions/metadataSaveFingerprintRequest"
+            }
+          },
+          "400": {
+            "description": "File ID or Fingerprint not present in request",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          },
+          "401": {
+            "description": "User is not authorized",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          },
+          "500": {
+            "description": "DB produced error",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/metadataSaveFingerprintRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MetadataProcessingService"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/metadata/search": {
+      "post": {
+        "operationId": "FindAllWithConditions",
+        "responses": {
+          "200": {
+            "description": "Return all metadata",
+            "schema": {
+              "$ref": "#/definitions/metadataFindAllResponse"
+            }
+          },
+          "400": {
+            "description": "Conditions are not valid or not serializable",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          },
+          "401": {
+            "description": "User is not authorized",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          },
+          "500": {
+            "description": "s3 or DB produced error",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/metadataFindAllWithConditionsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MetadataProcessingService"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/metadata/search/full": {
+      "post": {
+        "operationId": "FindAllWithConditions",
+        "responses": {
+          "200": {
+            "description": "Return all metadata by text searching criteria",
+            "schema": {
+              "$ref": "#/definitions/metadataFindAllResponse"
+            }
+          },
+          "400": {
+            "description": "Text searching are not valid or not serializable",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          },
+          "401": {
+            "description": "User is not authorized",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          },
+          "500": {
+            "description": "s3 or DB produced error",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/metadataFindAllWithTextSearchingRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MetadataProcessingService"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/metadata/search/text": {
+      "post": {
+        "operationId": "FindAllWithConditions",
+        "responses": {
+          "200": {
+            "description": "Return all metadata by text searching criteria",
+            "schema": {
+              "$ref": "#/definitions/metadataFindAllResponse"
+            }
+          },
+          "400": {
+            "description": "Text searching are not valid or not serializable",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          },
+          "401": {
+            "description": "User is not authorized",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          },
+          "500": {
+            "description": "s3 or DB produced error",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/metadataFindAllWithTextSearchingRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MetadataProcessingService"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/metadata/{metadataId}": {
+      "get": {
+        "operationId": "GetFileMetadata",
+        "responses": {
+          "200": {
+            "description": "Metadata by ID is found",
+            "schema": {
+              "$ref": "#/definitions/metadataGetMetadataResponse"
+            }
+          },
+          "401": {
+            "description": "User is not authorized",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          },
+          "404": {
+            "description": "Metadata by ID not found",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          },
+          "500": {
+            "description": "Cannot fetch data from DB",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "metadataId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "MetadataProcessingService"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/metadata/{updateMetadataId}": {
+      "put": {
+        "operationId": "UpdateFileMetadata",
+        "responses": {
+          "200": {
+            "description": "Metadata updated",
+            "schema": {
+              "$ref": "#/definitions/metadataUpdateMetadataResponse"
+            }
+          },
+          "400": {
+            "description": "Metadata not valid or not serializable",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          },
+          "401": {
+            "description": "User is not authorized",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          },
+          "404": {
+            "description": "Metadata by ID not found",
+            "schema": {
+              "$ref": "#/definitions/metadataError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "updateMetadataId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "metadata": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "MetadataProcessingService"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "documentPostQRResponse": {
+      "type": "object",
+      "properties": {
+        "qr": {
+          "type": "string"
+        },
+        "documentId": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "metadataError": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": "string"
+        }
+      }
+    },
+    "metadataFindAllFingerprintsByIDResponse": {
+      "type": "object",
+      "properties": {
+        "fingerprints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/metadataFingerprint"
+          }
+        }
+      }
+    },
+    "metadataFindAllResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "fileName": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "number": {
+          "type": "string"
+        },
+        "class": {
+          "type": "string"
+        },
+        "checked": {
+          "type": "boolean"
+        },
+        "organization": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object"
+        }
+      }
+    },
+    "metadataFindAllWithConditionsRequest": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "class": {
+          "type": "string"
+        },
+        "number": {
+          "type": "string"
+        },
+        "organization": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object"
+        }
+      }
+    },
+    "metadataFindAllWithTextSearchingRequest": {
+      "type": "object",
+      "properties": {
+        "search": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "metadataFingerprint": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "fileId": {
+          "type": "string"
+        },
+        "fingerprint": {
+          "type": "string"
+        },
+        "createdDate": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        }
+      }
+    },
+    "metadataGetMetadataResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "fileName": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "number": {
+          "type": "string"
+        },
+        "class": {
+          "type": "string"
+        },
+        "checked": {
+          "type": "boolean"
+        },
+        "organization": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object"
+        }
+      }
+    },
+    "metadataSaveFingerprintRequest": {
+      "type": "object",
+      "properties": {
+        "fileId": {
+          "type": "string"
+        },
+        "fingerprint": {
+          "type": "string"
+        }
+      }
+    },
+    "metadataSaveFingerprintResponse": {
+      "type": "object",
+      "properties": {
+        "fingerprintId": {
+          "type": "string"
+        }
+      }
+    },
+    "metadataUpdateMetadataResponse": {
+      "type": "object"
+    },
+    "protobufNullValue": {
+      "type": "string",
+      "enum": [
+        "NULL_VALUE"
+      ],
+      "default": "NULL_VALUE",
+      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
+    }
+  },
+  "securityDefinitions": {
+    "BasicAuth": {
+      "type": "apiKey",
+      "name": "Authorization token",
+      "in": "header"
+    }
+  }
+}

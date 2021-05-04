@@ -1,0 +1,92 @@
+syntax="proto3";
+
+package document;
+
+import "api/annotations.proto";
+import "openapiv2/annotations.proto";
+
+option go_package = "/proto;pb";
+
+//option (micro.openapiv2.openapiv2_swagger) = {
+//  security_definitions: {
+//    security: {
+//      key: "BasicAuth";
+//      value: {
+//        name: "Authorization token"
+//        type: TYPE_API_KEY;
+//        in: IN_HEADER;
+//      }
+//    }
+//  }
+//};
+
+service DocumentQRProcessingService {
+  rpc GetDocumentQR(PostQRRequest) returns (PostQRResponse) {
+    option (micro.api.http) = {
+      get: "/document/{document_id}"
+    };
+    //    option (micro.openapiv2.openapiv2_operation) = {
+    //      operation_id: "PostDocumentQR"
+    //      produces: "application/json"
+    //      responses: {
+    //        key: "200"
+    //        value: {
+    //          description: "Document by ID is found"
+    //          schema: {
+    //            json_schema: {
+    //              ref: "document.PostQRResponse"
+    //            }
+    //          }
+    //        }
+    //      }
+    //      responses: {
+    //        key: "401"
+    //        value: {
+    //          description: "User is not authorized"
+    //          schema: {
+    //            json_schema: {
+    //              ref: "document.Error"
+    //            }
+    //          }
+    //        }
+    //      }
+    //      responses: {
+    //        key: "404";
+    //        value: {
+    //          description: "Document by ID not found";
+    //          schema: {
+    //            json_schema: {
+    //              ref: "document.Error";
+    //            };
+    //          };
+    //        };
+    //      };
+    //      responses: {
+    //        key: "500"
+    //        value: {
+    //          description: "Cannot fetch data from DB"
+    //          schema: {
+    //            json_schema: {
+    //              ref: "document.Error"
+    //            }
+    //          }
+    //        }
+    //      }
+    //    };
+  };
+  rpc PostDocumentQR(PostQRRequest) returns (PostQRResponse) {
+    option (micro.api.http) = {
+      post: "/document/{document_id}"
+    };
+  };
+}
+
+message PostQRRequest {
+  string document_id = 1;
+}
+
+message PostQRResponse {
+  string qr = 1;
+  string document_id = 2;
+  string id = 3;
+}
