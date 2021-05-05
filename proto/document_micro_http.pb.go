@@ -7,6 +7,7 @@ import (
 	v3 "github.com/unistack-org/micro-client-http/v3"
 	api "github.com/unistack-org/micro/v3/api"
 	client "github.com/unistack-org/micro/v3/client"
+	codec "github.com/unistack-org/micro/v3/codec"
 	server "github.com/unistack-org/micro/v3/server"
 	http "net/http"
 )
@@ -46,6 +47,19 @@ func (c *documentQRProcessingServiceClient) PostDocumentQR(ctx context.Context, 
 	return rsp, nil
 }
 
+func (c *documentQRProcessingServiceClient) PostQRImage(ctx context.Context, req *PostQRRequest, opts ...client.CallOption) (*codec.Frame, error) {
+	opts = append(opts,
+		v3.Method(http.MethodGet),
+		v3.Path("/document/{document_id}/image"),
+	)
+	rsp := &codec.Frame{}
+	err := c.c.Call(ctx, c.c.NewRequest(c.name, "DocumentQRProcessingService.PostQRImage", req), rsp, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return rsp, nil
+}
+
 type documentQRProcessingServiceServer struct {
 	DocumentQRProcessingServiceServer
 }
@@ -58,10 +72,15 @@ func (h *documentQRProcessingServiceServer) PostDocumentQR(ctx context.Context, 
 	return h.DocumentQRProcessingServiceServer.PostDocumentQR(ctx, req, rsp)
 }
 
+func (h *documentQRProcessingServiceServer) PostQRImage(ctx context.Context, req *PostQRRequest, rsp *codec.Frame) error {
+	return h.DocumentQRProcessingServiceServer.PostQRImage(ctx, req, rsp)
+}
+
 func RegisterDocumentQRProcessingServiceServer(s server.Server, sh DocumentQRProcessingServiceServer, opts ...server.HandlerOption) error {
 	type documentQRProcessingService interface {
 		GetDocumentQR(ctx context.Context, req *PostQRRequest, rsp *PostQRResponse) error
 		PostDocumentQR(ctx context.Context, req *PostQRRequest, rsp *PostQRResponse) error
+		PostQRImage(ctx context.Context, req *PostQRRequest, rsp *codec.Frame) error
 	}
 	type DocumentQRProcessingService struct {
 		documentQRProcessingService

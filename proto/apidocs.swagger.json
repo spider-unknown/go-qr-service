@@ -65,6 +65,30 @@
         ]
       }
     },
+    "/document/{documentId}/image": {
+      "get": {
+        "operationId": "DocumentQRProcessingService_PostQRImage",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/codecFrame"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "documentId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DocumentQRProcessingService"
+        ]
+      }
+    },
     "/metadata": {
       "get": {
         "operationId": "FindAll",
@@ -440,6 +464,15 @@
     }
   },
   "definitions": {
+    "codecFrame": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
     "documentPostQRResponse": {
       "type": "object",
       "properties": {

@@ -43,10 +43,10 @@ func (c *metadataProcessingServiceClient) GetFileMetadata(ctx context.Context, r
 
 func (c *metadataProcessingServiceClient) UpdateFileMetadata(ctx context.Context, req *UpdateMetadataRequest, opts ...client.CallOption) (*UpdateMetadataResponse, error) {
 	errmap := make(map[string]interface{}, 4)
-	errmap["404"] = &Error{}
-	errmap["200"] = &UpdateMetadataResponse{}
 	errmap["400"] = &Error{}
 	errmap["401"] = &Error{}
+	errmap["404"] = &Error{}
+	errmap["200"] = &UpdateMetadataResponse{}
 	opts = append(opts,
 		v3.ErrorMap(errmap),
 	)
@@ -65,9 +65,9 @@ func (c *metadataProcessingServiceClient) UpdateFileMetadata(ctx context.Context
 
 func (c *metadataProcessingServiceClient) FindAll(ctx context.Context, req *FindAllRequest, opts ...client.CallOption) (MetadataProcessingService_FindAllClient, error) {
 	errmap := make(map[string]interface{}, 3)
+	errmap["200"] = &FindAllResponse{}
 	errmap["401"] = &Error{}
 	errmap["500"] = &Error{}
-	errmap["200"] = &FindAllResponse{}
 	opts = append(opts,
 		v3.ErrorMap(errmap),
 	)
@@ -167,10 +167,10 @@ func (s *metadataProcessingServiceClientFindAllWithConditions) Recv() (*FindAllR
 
 func (c *metadataProcessingServiceClient) FindAllWithTextSearching(ctx context.Context, req *FindAllWithTextSearchingRequest, opts ...client.CallOption) (MetadataProcessingService_FindAllWithTextSearchingClient, error) {
 	errmap := make(map[string]interface{}, 4)
-	errmap["500"] = &Error{}
-	errmap["200"] = &FindAllResponse{}
 	errmap["400"] = &Error{}
 	errmap["401"] = &Error{}
+	errmap["500"] = &Error{}
+	errmap["200"] = &FindAllResponse{}
 	opts = append(opts,
 		v3.ErrorMap(errmap),
 	)
@@ -219,10 +219,10 @@ func (s *metadataProcessingServiceClientFindAllWithTextSearching) Recv() (*FindA
 
 func (c *metadataProcessingServiceClient) FindAllWithFullSearching(ctx context.Context, req *FindAllWithTextSearchingRequest, opts ...client.CallOption) (MetadataProcessingService_FindAllWithFullSearchingClient, error) {
 	errmap := make(map[string]interface{}, 4)
-	errmap["500"] = &Error{}
-	errmap["200"] = &FindAllResponse{}
 	errmap["400"] = &Error{}
 	errmap["401"] = &Error{}
+	errmap["500"] = &Error{}
+	errmap["200"] = &FindAllResponse{}
 	opts = append(opts,
 		v3.ErrorMap(errmap),
 	)
@@ -271,10 +271,10 @@ func (s *metadataProcessingServiceClientFindAllWithFullSearching) Recv() (*FindA
 
 func (c *metadataProcessingServiceClient) SaveFingerprint(ctx context.Context, req *SaveFingerprintRequest, opts ...client.CallOption) (*SaveFingerprintResponse, error) {
 	errmap := make(map[string]interface{}, 4)
+	errmap["201"] = &SaveFingerprintRequest{}
 	errmap["400"] = &Error{}
 	errmap["401"] = &Error{}
 	errmap["500"] = &Error{}
-	errmap["201"] = &SaveFingerprintRequest{}
 	opts = append(opts,
 		v3.ErrorMap(errmap),
 	)
@@ -293,10 +293,10 @@ func (c *metadataProcessingServiceClient) SaveFingerprint(ctx context.Context, r
 
 func (c *metadataProcessingServiceClient) FindAllFingerprintsByID(ctx context.Context, req *FindAllFingerprintsByIDRequest, opts ...client.CallOption) (*FindAllFingerprintsByIDResponse, error) {
 	errmap := make(map[string]interface{}, 4)
-	errmap["401"] = &Error{}
-	errmap["500"] = &Error{}
 	errmap["200"] = &FindAllFingerprintsByIDResponse{}
 	errmap["400"] = &Error{}
+	errmap["401"] = &Error{}
+	errmap["500"] = &Error{}
 	opts = append(opts,
 		v3.ErrorMap(errmap),
 	)

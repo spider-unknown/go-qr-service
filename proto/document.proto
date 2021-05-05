@@ -4,6 +4,7 @@ package document;
 
 import "api/annotations.proto";
 import "openapiv2/annotations.proto";
+import "codec/frame.proto";
 
 option go_package = "/proto;pb";
 
@@ -77,6 +78,11 @@ service DocumentQRProcessingService {
   rpc PostDocumentQR(PostQRRequest) returns (PostQRResponse) {
     option (micro.api.http) = {
       post: "/document/{document_id}"
+    };
+  };
+  rpc PostQRImage(PostQRRequest) returns (micro.codec.Frame) {
+    option (micro.api.http) = {
+      get: "/document/{document_id}/image"
     };
   };
 }

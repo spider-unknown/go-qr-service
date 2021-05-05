@@ -5,6 +5,7 @@ import (
 	"document-qr/internal/app/service"
 	pb "document-qr/proto"
 	httpsrv "github.com/unistack-org/micro-server-http/v3"
+	"github.com/unistack-org/micro/v3/codec"
 	"net/http"
 )
 
@@ -22,6 +23,10 @@ func (h *DocumentQRHandler) GetDocumentQR(ctx context.Context, req *pb.PostQRReq
 
 func (h *DocumentQRHandler) PostDocumentQR(ctx context.Context, req *pb.PostQRRequest, rsp *pb.PostQRResponse) error {
 	return responseHandler(ctx, h.documentService.MakeQR(ctx, req, rsp), http.StatusOK)
+}
+
+func (h *DocumentQRHandler) PostQRImage(ctx context.Context, req *pb.PostQRRequest, rsp *codec.Frame) error {
+	return responseHandler(ctx, h.documentService.GetQRImage(ctx, req, rsp), http.StatusOK)
 }
 
 func responseHandler(ctx context.Context, resp interface{}, statusCode int) error {

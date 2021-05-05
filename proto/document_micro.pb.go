@@ -6,6 +6,7 @@ import (
 	context "context"
 	api "github.com/unistack-org/micro/v3/api"
 	client "github.com/unistack-org/micro/v3/client"
+	codec "github.com/unistack-org/micro/v3/codec"
 )
 
 func NewDocumentQRProcessingServiceEndpoints() []*api.Endpoint {
@@ -22,15 +23,23 @@ func NewDocumentQRProcessingServiceEndpoints() []*api.Endpoint {
 			Method:  []string{"POST"},
 			Handler: "rpc",
 		},
+		&api.Endpoint{
+			Name:    "DocumentQRProcessingService.PostQRImage",
+			Path:    []string{"/document/{document_id}/image"},
+			Method:  []string{"GET"},
+			Handler: "rpc",
+		},
 	}
 }
 
 type DocumentQRProcessingServiceClient interface {
 	GetDocumentQR(ctx context.Context, req *PostQRRequest, opts ...client.CallOption) (*PostQRResponse, error)
 	PostDocumentQR(ctx context.Context, req *PostQRRequest, opts ...client.CallOption) (*PostQRResponse, error)
+	PostQRImage(ctx context.Context, req *PostQRRequest, opts ...client.CallOption) (*codec.Frame, error)
 }
 
 type DocumentQRProcessingServiceServer interface {
 	GetDocumentQR(ctx context.Context, req *PostQRRequest, rsp *PostQRResponse) error
 	PostDocumentQR(ctx context.Context, req *PostQRRequest, rsp *PostQRResponse) error
+	PostQRImage(ctx context.Context, req *PostQRRequest, rsp *codec.Frame) error
 }

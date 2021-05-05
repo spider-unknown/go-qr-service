@@ -19,10 +19,8 @@ func NewDocumentRepository(db *sqlx.DB, codec codec.Codec) DocumentRepository {
 	return &DocumentRepositorySQL{db: db, codec: codec}
 }
 func (dr *DocumentRepositorySQL) FindById(ctx context.Context, request *pb.PostQRRequest) (*model.Document, error) {
-	tx, err := dr.db.Begin()
-	if err != nil {
-		return nil, &pb.Error{Msg: err.Error()}
-	}
+	tx := dr.db.MustBeginTx(ctx, &sql.TxOptions{ReadOnly: true})
+
 	document := &model.Document{}
 	query := "select * from document_qrs where document_id = $1"
 	sqlErr := tx.QueryRowContext(
@@ -33,7 +31,7 @@ func (dr *DocumentRepositorySQL) FindById(ctx context.Context, request *pb.PostQ
 
 	if sqlErr != nil {
 		tx.Rollback()
-		return document, nil
+		return nil, sqlErr
 	}
 	tx.Commit()
 	return document, nil
@@ -45,10 +43,10 @@ func (dr *DocumentRepositorySQL) Create(ctx context.Context, request *pb.PostQRR
 
 	sqlErr := tx.QueryRowContext(
 		ctx,
-		"insert into document_qrs (id, document_id, qr) values ($1, $2, $3) returning id, qr, document_id",
+		"insert into document_qrs (id, document_id, qr) values ($1, $2, $3) returning id",
 		uuid.New().String(),
 		request.DocumentId,
-		qr).Scan(&document.Id, &document.QR, &document.DocumentId)
+		qr).Scan(&document.Id)
 	if sqlErr != nil {
 		tx.Rollback()
 		return nil, &pb.Error{Msg: sqlErr.Error()}
