@@ -60,6 +60,19 @@ func (c *documentQRProcessingServiceClient) PostQRImage(ctx context.Context, req
 	return rsp, nil
 }
 
+func (c *documentQRProcessingServiceClient) PostNewDocument(ctx context.Context, req *PostNewDocumentRequest, opts ...client.CallOption) (*PostNewDocumentResponse, error) {
+	opts = append(opts,
+		v3.Method(http.MethodPost),
+		v3.Path("/new/document"),
+	)
+	rsp := &PostNewDocumentResponse{}
+	err := c.c.Call(ctx, c.c.NewRequest(c.name, "DocumentQRProcessingService.PostNewDocument", req), rsp, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return rsp, nil
+}
+
 type documentQRProcessingServiceServer struct {
 	DocumentQRProcessingServiceServer
 }
@@ -76,11 +89,16 @@ func (h *documentQRProcessingServiceServer) PostQRImage(ctx context.Context, req
 	return h.DocumentQRProcessingServiceServer.PostQRImage(ctx, req, rsp)
 }
 
+func (h *documentQRProcessingServiceServer) PostNewDocument(ctx context.Context, req *PostNewDocumentRequest, rsp *PostNewDocumentResponse) error {
+	return h.DocumentQRProcessingServiceServer.PostNewDocument(ctx, req, rsp)
+}
+
 func RegisterDocumentQRProcessingServiceServer(s server.Server, sh DocumentQRProcessingServiceServer, opts ...server.HandlerOption) error {
 	type documentQRProcessingService interface {
 		GetDocumentQR(ctx context.Context, req *PostQRRequest, rsp *PostQRResponse) error
 		PostDocumentQR(ctx context.Context, req *PostQRRequest, rsp *PostQRResponse) error
 		PostQRImage(ctx context.Context, req *PostQRRequest, rsp *codec.Frame) error
+		PostNewDocument(ctx context.Context, req *PostNewDocumentRequest, rsp *PostNewDocumentResponse) error
 	}
 	type DocumentQRProcessingService struct {
 		documentQRProcessingService

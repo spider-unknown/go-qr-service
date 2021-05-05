@@ -85,10 +85,20 @@ service DocumentQRProcessingService {
       get: "/document/{document_id}/image"
     };
   };
+  rpc PostNewDocument(PostNewDocumentRequest) returns (PostNewDocumentResponse) {
+    option (micro.api.http) = {
+      post: "/new/document"
+    };
+  };
 }
 
 message PostQRRequest {
   string document_id = 1;
+}
+
+message PostNewDocumentRequest {}
+message PostNewDocumentResponse {
+  string qr_id = 1;
 }
 
 message PostQRResponse {

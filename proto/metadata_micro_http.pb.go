@@ -22,10 +22,10 @@ func NewMetadataProcessingServiceClient(name string, c client.Client) MetadataPr
 
 func (c *metadataProcessingServiceClient) GetFileMetadata(ctx context.Context, req *GetMetadataRequest, opts ...client.CallOption) (*GetMetadataResponse, error) {
 	errmap := make(map[string]interface{}, 4)
-	errmap["404"] = &Error{}
 	errmap["500"] = &Error{}
 	errmap["200"] = &GetMetadataResponse{}
 	errmap["401"] = &Error{}
+	errmap["404"] = &Error{}
 	opts = append(opts,
 		v3.ErrorMap(errmap),
 	)
@@ -43,10 +43,10 @@ func (c *metadataProcessingServiceClient) GetFileMetadata(ctx context.Context, r
 
 func (c *metadataProcessingServiceClient) UpdateFileMetadata(ctx context.Context, req *UpdateMetadataRequest, opts ...client.CallOption) (*UpdateMetadataResponse, error) {
 	errmap := make(map[string]interface{}, 4)
+	errmap["200"] = &UpdateMetadataResponse{}
 	errmap["400"] = &Error{}
 	errmap["401"] = &Error{}
 	errmap["404"] = &Error{}
-	errmap["200"] = &UpdateMetadataResponse{}
 	opts = append(opts,
 		v3.ErrorMap(errmap),
 	)
@@ -167,10 +167,10 @@ func (s *metadataProcessingServiceClientFindAllWithConditions) Recv() (*FindAllR
 
 func (c *metadataProcessingServiceClient) FindAllWithTextSearching(ctx context.Context, req *FindAllWithTextSearchingRequest, opts ...client.CallOption) (MetadataProcessingService_FindAllWithTextSearchingClient, error) {
 	errmap := make(map[string]interface{}, 4)
+	errmap["200"] = &FindAllResponse{}
 	errmap["400"] = &Error{}
 	errmap["401"] = &Error{}
 	errmap["500"] = &Error{}
-	errmap["200"] = &FindAllResponse{}
 	opts = append(opts,
 		v3.ErrorMap(errmap),
 	)
@@ -271,10 +271,10 @@ func (s *metadataProcessingServiceClientFindAllWithFullSearching) Recv() (*FindA
 
 func (c *metadataProcessingServiceClient) SaveFingerprint(ctx context.Context, req *SaveFingerprintRequest, opts ...client.CallOption) (*SaveFingerprintResponse, error) {
 	errmap := make(map[string]interface{}, 4)
-	errmap["201"] = &SaveFingerprintRequest{}
 	errmap["400"] = &Error{}
 	errmap["401"] = &Error{}
 	errmap["500"] = &Error{}
+	errmap["201"] = &SaveFingerprintRequest{}
 	opts = append(opts,
 		v3.ErrorMap(errmap),
 	)

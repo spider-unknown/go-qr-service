@@ -9,4 +9,5 @@ import (
 type DocumentRepository interface {
 	FindById(ctx context.Context, request *pb.PostQRRequest) (*model.Document, error)
 	Create(ctx context.Context, request *pb.PostQRRequest, qr string) (*model.Document, error)
+	CreateEmptyDocument(ctx context.Context) (*model.Document, error)
 }

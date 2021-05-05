@@ -54,3 +54,19 @@ func (dr *DocumentRepositorySQL) Create(ctx context.Context, request *pb.PostQRR
 	tx.Commit()
 	return document, nil
 }
+
+func (dr *DocumentRepositorySQL) CreateEmptyDocument(ctx context.Context) (*model.Document, error) {
+	tx := dr.db.MustBeginTx(ctx, &sql.TxOptions{})
+	document := &model.Document{}
+
+	sqlErr := tx.QueryRowContext(
+		ctx,
+		"insert into document_qrs (id) values ($1) returning id",
+		uuid.New().String()).Scan(&document.Id)
+	if sqlErr != nil {
+		tx.Rollback()
+		return nil, &pb.Error{Msg: sqlErr.Error()}
+	}
+	tx.Commit()
+	return document, nil
+}

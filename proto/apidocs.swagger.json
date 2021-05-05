@@ -461,6 +461,22 @@
           "application/json"
         ]
       }
+    },
+    "/new/document": {
+      "post": {
+        "operationId": "DocumentQRProcessingService_PostNewDocument",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/documentPostNewDocumentResponse"
+            }
+          }
+        },
+        "tags": [
+          "DocumentQRProcessingService"
+        ]
+      }
     }
   },
   "definitions": {
@@ -470,6 +486,14 @@
         "data": {
           "type": "string",
           "format": "byte"
+        }
+      }
+    },
+    "documentPostNewDocumentResponse": {
+      "type": "object",
+      "properties": {
+        "qrId": {
+          "type": "string"
         }
       }
     },

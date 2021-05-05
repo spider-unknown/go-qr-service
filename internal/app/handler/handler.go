@@ -29,6 +29,11 @@ func (h *DocumentQRHandler) PostQRImage(ctx context.Context, req *pb.PostQRReque
 	return responseHandler(ctx, h.documentService.GetQRImage(ctx, req, rsp), http.StatusOK)
 }
 
+func (h *DocumentQRHandler) PostNewDocument(ctx context.Context, req *pb.PostNewDocumentRequest, rsp *pb.PostNewDocumentResponse) error {
+	return responseHandler(ctx, h.documentService.NewDocument(ctx, req, rsp), http.StatusOK)
+
+}
+
 func responseHandler(ctx context.Context, resp interface{}, statusCode int) error {
 	_, isInternal := resp.(*pb.Error)
 	_, isDenied := resp.(*pb.ErrorAccessDenied)

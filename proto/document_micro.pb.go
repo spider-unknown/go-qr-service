@@ -29,6 +29,12 @@ func NewDocumentQRProcessingServiceEndpoints() []*api.Endpoint {
 			Method:  []string{"GET"},
 			Handler: "rpc",
 		},
+		&api.Endpoint{
+			Name:    "DocumentQRProcessingService.PostNewDocument",
+			Path:    []string{"/new/document"},
+			Method:  []string{"POST"},
+			Handler: "rpc",
+		},
 	}
 }
 
@@ -36,10 +42,12 @@ type DocumentQRProcessingServiceClient interface {
 	GetDocumentQR(ctx context.Context, req *PostQRRequest, opts ...client.CallOption) (*PostQRResponse, error)
 	PostDocumentQR(ctx context.Context, req *PostQRRequest, opts ...client.CallOption) (*PostQRResponse, error)
 	PostQRImage(ctx context.Context, req *PostQRRequest, opts ...client.CallOption) (*codec.Frame, error)
+	PostNewDocument(ctx context.Context, req *PostNewDocumentRequest, opts ...client.CallOption) (*PostNewDocumentResponse, error)
 }
 
 type DocumentQRProcessingServiceServer interface {
 	GetDocumentQR(ctx context.Context, req *PostQRRequest, rsp *PostQRResponse) error
 	PostDocumentQR(ctx context.Context, req *PostQRRequest, rsp *PostQRResponse) error
 	PostQRImage(ctx context.Context, req *PostQRRequest, rsp *codec.Frame) error
+	PostNewDocument(ctx context.Context, req *PostNewDocumentRequest, rsp *PostNewDocumentResponse) error
 }

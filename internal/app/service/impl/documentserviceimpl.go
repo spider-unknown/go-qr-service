@@ -83,6 +83,7 @@ func (d DocumentServiceImpl) GetQRImage(ctx context.Context, req *pb.PostQRReque
 	if err != nil {
 		return &pb.Error{Msg: err.Error()}
 	}
+
 	fileName := time.Now().Format(time.RFC3339) + document.Id + ".png"
 	file, err := os.Create(fileName)
 	if err != nil {
@@ -102,5 +103,14 @@ func (d DocumentServiceImpl) GetQRImage(ctx context.Context, req *pb.PostQRReque
 	metadata.SetOutgoingContext(ctx, md)
 	os.Remove(fileName)
 
+	return nil
+}
+
+func (d DocumentServiceImpl) NewDocument(ctx context.Context, req *pb.PostNewDocumentRequest, res *pb.PostNewDocumentResponse) error {
+	document, err := d.documentRepository.CreateEmptyDocument(ctx)
+	if err != nil {
+		return &pb.Error{Msg: err.Error()}
+	}
+	res.QrId = document.Id
 	return nil
 }
